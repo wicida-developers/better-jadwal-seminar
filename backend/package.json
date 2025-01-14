@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled --remote",
+    "deploy": "wrangler deploy --minify",
+    "local:db:migrate": "wrangler d1 execute --local --file=./schema.sql",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "hono": "^4.6.16"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "wrangler": "^3.101.0"
+  }
+}

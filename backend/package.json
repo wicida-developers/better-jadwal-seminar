@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "wrangler dev --test-scheduled",
     "deploy": "wrangler deploy --minify",
-    "local:db:migrate": "wrangler d1 execute --local --file=./schema.sql",
+    "local:db:migrate": "wrangler d1 execute bjs-db --local --file=./schema.db",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {

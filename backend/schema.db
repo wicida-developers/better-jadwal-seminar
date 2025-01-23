@@ -1,14 +1,14 @@
 PRAGMA defer_foreign_keys=TRUE;
 DROP TABLE IF EXISTS seminars;
 CREATE TABLE IF NOT EXISTS seminars (
-   id INTEGER PRIMARY KEY AUTOINCREMENT,
    title TEXT NOT NULL,
    seminarType TEXT NOT NULL,
    studentName TEXT NOT NULL,
    major TEXT NOT NULL,
    advisors TEXT NOT NULL,
    examiners TEXT NOT NULL,
-   date TEXT NOT NULL
+   room TEXT NOT NULL,
+   datetime DATETIME NOT NULL
 );
 
 DROP TABLE IF EXISTS cf_KV;

@@ -14,18 +14,30 @@ app.use(logger())
 app.use(cors({ origin: '*' }))
 
 app.get('/seminars', async (c) => {
-  const db = d1Database(c.env.DB)
+  try {
+    const db = d1Database(c.env.DB)
 
-  const seminars = await db.seminar.getAll()
-  const lastUpdated = await db.KV.get('last_updated')
+    const seminars = await db.seminar.getAll()
+    const lastUpdated = await db.KV.get('last_updated')
 
-  return c.json({
-    success: true,
-    data: {
-      lastUpdated,
-      seminars
+    return c.json({
+      success: true,
+      data: {
+        lastUpdated,
+        seminars
+      }
+    })
+  } catch (error) {
+    if (error instanceof Error) {
+      return c.json(
+        {
+          success: false,
+          message: error.message
+        },
+        500
+      )
     }
-  })
+  }
 })
 
 export default {

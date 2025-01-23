@@ -5,7 +5,8 @@ type SeminarRecord = {
   major: string
   advisors: string
   examiners: string
-  date: string
+  room: string
+  datetime: string
 }
 
 export function d1Database(d1: D1Database) {
@@ -26,21 +27,18 @@ export function d1Database(d1: D1Database) {
       async update(data: SeminarRecord[]) {
         const stmt = d1.prepare(
           `INSERT INTO seminars 
-          (title, studentName, seminarType, major, advisors, examiners, date)
-          VALUES (?, ?, ?, ?, ?, ?, ?)`
+          (title, studentName, seminarType, major, advisors, examiners, room, datetime)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
         )
 
         await d1.batch(
-          data.map(({ title, studentName, seminarType, major, advisors, examiners, date }) =>
-            stmt.bind(title, studentName, seminarType, major, advisors, examiners, date)
+          data.map(({ title, studentName, seminarType, major, advisors, examiners, room, datetime }) =>
+            stmt.bind(title, studentName, seminarType, major, advisors, examiners, room, datetime)
           )
         )
       },
       async reset() {
-        await Promise.all([
-          d1.exec(`DELETE FROM SQLITE_SEQUENCE WHERE name='seminars'`),
-          d1.exec('DELETE FROM seminars')
-        ])
+        await d1.exec('DELETE FROM seminars')
       }
     },
     KV: {

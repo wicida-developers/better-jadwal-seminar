@@ -54,7 +54,7 @@ export const scheduler = async (event: ScheduledEvent, env: Env, ctx: ExecutionC
       return row.map((str) => str.replace(/\s+/g, ' ').trim())
     })
     // convert to object
-    .map(([date, seminarType, _studentName, major, _title]) => {
+    .map(([_datetime, seminarType, _studentName, major, _title]) => {
       const studentName = _studentName.replace(/^[\d\s]+/g, '')
 
       const [title, lecturers] = _title.split('Pembimbing Utama =').map((str) => str.trim())
@@ -66,17 +66,27 @@ export const scheduler = async (event: ScheduledEvent, env: Env, ctx: ExecutionC
       const advisors = lecturerList.slice(0, lecturerList.length <= 2 ? 1 : 2).join(';')
       const examiners = lecturerList.slice(lecturerList.length <= 2 ? 1 : 2).join(';')
 
+      const datetime = _datetime.replace(
+        /.*(\d{2}) \/ (\d{2}) \/ (\d{4}) Jam (\d+)[.|:](\d+).*/,
+        '$3-$2-$1T$4:$5:00+08:00'
+      )
+      const isoDateFormatted = new Date(datetime).toISOString()
+
+      const room = _datetime.split(/00|30/).pop() || ''
+
       return {
         title,
         seminarType,
-        date,
         studentName,
         major,
         advisors,
-        examiners
+        examiners,
+        room,
+        datetime: isoDateFormatted
       }
     })
 
+  // console.log(data)
   const db = d1Database(env.DB)
 
   await db.seminar.reset()

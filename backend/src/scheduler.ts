@@ -24,25 +24,14 @@ const login = async (username: string, password: string) => {
   return cookie as string
 }
 
-export const scheduler = async (event: ScheduledEvent, env: Env, ctx: ExecutionContext) => {
-  const cookie = await login(env.USERNAME, env.PASSWORD)
-  if (!cookie) {
-    console.error('Login failed')
-    return
-  }
-
-  const response = await fetch(SCHEDULE_URL, {
-    headers: { cookie }
-  })
-
-  const html = await response.text()
-  const $ = cheerio.load(html)
+const parseSchedulePage = async (htmlPage: string) => {
+  const $ = cheerio.load(htmlPage)
 
   const rawData = $('tr > td')
     .map((_, element) => $(element).text())
     .get()
 
-  const data = rawData
+  const seminars = rawData
     .reduce((acc, _, index) => {
       if (index % 5 === 0) {
         acc.push(rawData.slice(index, index + 5))
@@ -85,6 +74,24 @@ export const scheduler = async (event: ScheduledEvent, env: Env, ctx: ExecutionC
         datetime: isoDateFormatted
       }
     })
+
+  return seminars
+}
+
+export const scheduler = async (event: ScheduledEvent, env: Env, ctx: ExecutionContext) => {
+  const cookie = await login(env.USERNAME, env.PASSWORD)
+  if (!cookie) {
+    console.error('Login failed')
+    return
+  }
+
+  const response = await fetch(SCHEDULE_URL, {
+    headers: { cookie }
+  })
+
+  const schedulePage = await response.text()
+
+  const data = await parseSchedulePage(schedulePage)
 
   // console.log(data)
   const db = d1Database(env.DB)

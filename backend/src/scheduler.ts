@@ -61,7 +61,7 @@ const parseSchedulePage = async (htmlPage: string) => {
       )
       const isoDateFormatted = new Date(datetime).toISOString()
 
-      const room = _datetime.split(/00|30/).pop() || ''
+      const room = _datetime.split(/[(00|30|15)] /).pop() || ''
 
       return {
         title,
@@ -74,6 +74,7 @@ const parseSchedulePage = async (htmlPage: string) => {
         datetime: isoDateFormatted
       }
     })
+    .sort((a, b) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime())
 
   return seminars
 }

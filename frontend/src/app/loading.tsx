@@ -5,17 +5,29 @@ import React from "react";
 export default function Loading() {
   return (
     <main className="px-4 py-8">
-      <div className="mb-4 flex items-center justify-between gap-2">
-        <div className="relative w-1/2">
+      <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        {/* Search Input Skeleton */}
+        <div className="relative w-full lg:w-1/2">
           <Skeleton className="h-10 w-full rounded-md" />
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Skeleton className="h-10 w-[180px] rounded-md" />
-          <Skeleton className="h-10 w-[180px] rounded-md" />
-          <Skeleton className="h-10 w-[300px] rounded-md" />
+
+        {/* Filters Skeleton */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+          {/* Last Updated Skeleton */}
+          <Skeleton className="h-10 w-full rounded-md" />
+
+          {/* Type Select Skeleton */}
+          <Skeleton className="h-10 w-full rounded-md sm:w-[180px]" />
+
+          {/* Major Select Skeleton */}
+          <Skeleton className="h-10 w-full rounded-md sm:w-[180px]" />
+
+          {/* Date Picker Skeleton */}
+          <Skeleton className="h-10 w-full rounded-md sm:w-[300px]" />
         </div>
       </div>
 
+      {/* Seminar Cards Skeleton */}
       <div className="flex flex-wrap gap-4">
         {[...Array(4)].map((_, idx) => (
           <Card key={idx} className="w-full md:w-[calc(50%-1rem)]">

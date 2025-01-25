@@ -238,7 +238,7 @@ export default function MainContent() {
                 selected={date ?? undefined}
                 onSelect={(value) => setDate(value ?? null)}
                 numberOfMonths={2}
-                className="hidden sm:block"
+                className="hidden lg:block"
               />
               <Calendar
                 initialFocus
@@ -247,7 +247,7 @@ export default function MainContent() {
                 selected={date ?? undefined}
                 onSelect={(value) => setDate(value ?? null)}
                 numberOfMonths={1}
-                className="sm:hidden"
+                className="lg:hidden"
               />
             </PopoverContent>
           </Popover>

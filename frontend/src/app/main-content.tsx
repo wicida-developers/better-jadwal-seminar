@@ -119,7 +119,7 @@ export default function MainContent() {
         <div className="relative w-full lg:w-1/2">
           <Input
             type="text"
-            placeholder="Search seminar..."
+            placeholder="Cari seminar..."
             value={query ?? ""}
             onChange={(e) => setQuery(e.target.value)}
             className="h-10 w-full rounded-md border border-input bg-background px-3 pl-10 text-sm"
@@ -156,7 +156,7 @@ export default function MainContent() {
           <div className="w-full rounded-md bg-muted px-4 py-2 text-muted-foreground sm:w-auto">
             {data?.seminars && (
               <p className="text-sm">
-                Last updated:{" "}
+                Terakhir diupdate:{" "}
                 {format(new Date(data.lastUpdated ?? ""), "PPpp", {
                   locale: id,
                 })}
@@ -170,7 +170,7 @@ export default function MainContent() {
             onValueChange={(value) => setType(value as SeminarType)}
           >
             <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Select a type" />
+              <SelectValue placeholder="pilih tipe" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -190,7 +190,7 @@ export default function MainContent() {
             onValueChange={(value) => setMajor(value as Major)}
           >
             <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Select a major" />
+              <SelectValue placeholder="Pilih jurusan" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>

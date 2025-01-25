@@ -28,6 +28,23 @@ interface BadgeTooltip {
 }
 
 const BadgeTooltip: React.FC<BadgeTooltip> = memo(({ major }) => {
+  let majorText = "";
+  switch (major) {
+    case Major.TI:
+      majorText = "Teknik Informatika";
+      break;
+    case Major.SI:
+      majorText = "Sistem Informasi";
+      break;
+    case Major.BD:
+      majorText = "Bisnis Digital";
+      break;
+
+    default:
+      majorText = "Unknown";
+      break;
+  }
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -50,7 +67,7 @@ const BadgeTooltip: React.FC<BadgeTooltip> = memo(({ major }) => {
           "rounded-full text-white",
         )}
       >
-        {major}
+        {majorText}
       </TooltipContent>
     </Tooltip>
   );

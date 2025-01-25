@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
-import { d1Database } from './libs/d1-database'
+import { d1Database } from './lib/d1-database'
 import { scheduler } from './scheduler'
 
 type Bindings = {

@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio'
-import { d1Database } from './libs/d1-database'
+import { d1Database } from './lib/d1-database'
 
 const LOGIN_URL = 'https://siak.wicida.ac.id/kpst/cek_login.php'
 const SCHEDULE_URL = 'https://siak.wicida.ac.id/kpst/index.php?menu=jadwal'

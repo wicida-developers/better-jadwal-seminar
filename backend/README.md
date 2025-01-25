@@ -2,7 +2,7 @@
 
 ## API Documentation
 
-### Get All Seminar
+### Get Seminar
 
 Endpoint: GET `/seminars`
 
@@ -16,6 +16,11 @@ Response Body:
 ```
 {
   "success": true,
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "pageCount": 1
+  },
   "data: {
     lastUpdated: "2025-01-01T00:00:00.000Z",
     seminars: [

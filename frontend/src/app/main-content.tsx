@@ -174,7 +174,7 @@ export default function MainContent() {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectLabel>Type</SelectLabel>
+                <SelectLabel>Tipe</SelectLabel>
                 {seminarTypes.map((major) => (
                   <SelectItem key={major} value={major}>
                     {major}
@@ -194,7 +194,7 @@ export default function MainContent() {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectLabel>Major</SelectLabel>
+                <SelectLabel>Jurusan</SelectLabel>
                 {MajorsList.map((major) => (
                   <SelectItem key={major} value={major}>
                     {major}
@@ -219,11 +219,18 @@ export default function MainContent() {
                 {date?.from ? (
                   date.to ? (
                     <>
-                      {format(date.from, "LLL dd, y")} -{" "}
-                      {format(date.to, "LLL dd, y")}
+                      {format(date.from, "LLL dd, y", {
+                        locale: id,
+                      })}{" "}
+                      -{" "}
+                      {format(date.to, "LLL dd, y", {
+                        locale: id,
+                      })}
                     </>
                   ) : (
-                    format(date.from, "LLL dd, y")
+                    format(date.from, "LLL dd, y", {
+                      locale: id,
+                    })
                   )
                 ) : (
                   <span>Pilih tanggal seminar</span>
@@ -239,6 +246,7 @@ export default function MainContent() {
                 onSelect={(value) => setDate(value ?? null)}
                 numberOfMonths={2}
                 className="hidden lg:block"
+                locale={id}
               />
               <Calendar
                 initialFocus
@@ -248,6 +256,7 @@ export default function MainContent() {
                 onSelect={(value) => setDate(value ?? null)}
                 numberOfMonths={1}
                 className="lg:hidden"
+                locale={id}
               />
             </PopoverContent>
           </Popover>

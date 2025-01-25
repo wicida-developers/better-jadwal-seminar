@@ -114,6 +114,17 @@ export default function MainContent() {
 
   return (
     <main className="px-4 py-8">
+      {/* Last Updated */}
+      <div className="mb-4 w-fit rounded-md bg-muted px-4 py-2 text-muted-foreground">
+        {data?.seminars && (
+          <p className="text-sm">
+            Terakhir diupdate:{" "}
+            {format(new Date(data.lastUpdated ?? ""), "PPpp", {
+              locale: id,
+            })}
+          </p>
+        )}
+      </div>
       <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         {/* Search Input */}
         <div className="relative w-full lg:w-1/2">
@@ -152,18 +163,6 @@ export default function MainContent() {
 
         {/* Filters */}
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-          {/* Last Updated */}
-          <div className="w-full rounded-md bg-muted px-4 py-2 text-muted-foreground sm:w-auto">
-            {data?.seminars && (
-              <p className="text-sm">
-                Terakhir diupdate:{" "}
-                {format(new Date(data.lastUpdated ?? ""), "PPpp", {
-                  locale: id,
-                })}
-              </p>
-            )}
-          </div>
-
           {/* Type Select */}
           <Select
             value={type ?? ""}

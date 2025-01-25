@@ -114,8 +114,9 @@ export default function MainContent() {
 
   return (
     <main className="px-4 py-8">
-      <div className="mb-4 flex items-center justify-between gap-2">
-        <div className="relative w-1/2">
+      <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        {/* Search Input */}
+        <div className="relative w-full lg:w-1/2">
           <Input
             type="text"
             placeholder="Search seminar..."
@@ -148,8 +149,11 @@ export default function MainContent() {
             </div>
           )}
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="rounded-md bg-muted px-4 py-2 text-muted-foreground">
+
+        {/* Filters */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+          {/* Last Updated */}
+          <div className="w-full rounded-md bg-muted px-4 py-2 text-muted-foreground sm:w-auto">
             {data?.seminars && (
               <p className="text-sm">
                 Last updated:{" "}
@@ -159,11 +163,13 @@ export default function MainContent() {
               </p>
             )}
           </div>
+
+          {/* Type Select */}
           <Select
             value={type ?? ""}
             onValueChange={(value) => setType(value as SeminarType)}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Select a type" />
             </SelectTrigger>
             <SelectContent>
@@ -177,11 +183,13 @@ export default function MainContent() {
               </SelectGroup>
             </SelectContent>
           </Select>
+
+          {/* Major Select */}
           <Select
             value={major ?? ""}
             onValueChange={(value) => setMajor(value as Major)}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Select a major" />
             </SelectTrigger>
             <SelectContent>
@@ -195,13 +203,15 @@ export default function MainContent() {
               </SelectGroup>
             </SelectContent>
           </Select>
+
+          {/* Date Picker */}
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 id="date"
                 variant="outline"
                 className={cn(
-                  "flex-1 justify-start text-left font-normal sm:w-[300px]",
+                  "w-full justify-start text-left font-normal sm:w-[300px]",
                   !date && "text-muted-foreground",
                 )}
               >
@@ -241,6 +251,8 @@ export default function MainContent() {
               />
             </PopoverContent>
           </Popover>
+
+          {/* Clear Filters Button */}
           {(date?.from ?? major) && (
             <Button
               variant="ghost"
@@ -263,7 +275,7 @@ export default function MainContent() {
         {filteredSeminars?.length === 0 ? (
           <div className="flex min-h-[200px] w-full items-center justify-center">
             <p className="text-center text-muted-foreground">
-              No data.seminars found
+              No Seminars avaliable or no seminars match the filter
             </p>
           </div>
         ) : (

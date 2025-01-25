@@ -20,6 +20,43 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
+import { Tooltip, TooltipContent } from "./ui/tooltip";
+import { TooltipTrigger } from "@radix-ui/react-tooltip";
+
+interface BadgeTooltip {
+  major: Major;
+}
+
+const BadgeTooltip: React.FC<BadgeTooltip> = memo(({ major }) => {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Badge
+          className={cn(
+            major === Major.TI && "bg-blue-500 hover:bg-blue-600",
+            major === Major.SI && "bg-yellow-500 hover:bg-yellow-600",
+            major === Major.BD && "bg-green-500 hover:bg-green-600",
+            "text-white",
+          )}
+        >
+          {major}
+        </Badge>
+      </TooltipTrigger>
+      <TooltipContent
+        className={cn(
+          major === Major.TI && "bg-blue-500",
+          major === Major.SI && "bg-yellow-500",
+          major === Major.BD && "bg-green-500",
+          "rounded-full text-white",
+        )}
+      >
+        {major}
+      </TooltipContent>
+    </Tooltip>
+  );
+});
+
+BadgeTooltip.displayName = "SeminarBadgeTooltip";
 
 interface SeminarCardProps {
   idx: number;
@@ -32,16 +69,7 @@ function SeminarCard({ idx, seminar }: SeminarCardProps) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="max-w-[80%]">{seminar.title}</CardTitle>
-          <Badge
-            className={cn(
-              seminar.major === Major.TI && "bg-blue-500 hover:bg-blue-600",
-              seminar.major === Major.SI && "bg-yellow-500 hover:bg-yellow-600",
-              seminar.major === Major.BD && "bg-green-500 hover:bg-green-600",
-              "text-white",
-            )}
-          >
-            {seminar.major}
-          </Badge>
+          <BadgeTooltip major={seminar.major} />
         </div>
         <CardDescription>{seminar.studentName}</CardDescription>
       </CardHeader>

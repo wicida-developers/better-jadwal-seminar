@@ -3,7 +3,7 @@ import "@/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "@/trpc/react";
-import Provide from "./provider";
+import Provider from "./provider";
 
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { env } from "@/env";
@@ -30,11 +30,11 @@ export default async function RootLayout({
         {/* rest of your scripts go under */}
       </head>
       <body>
-        <Provide>
+        <Provider>
           <TRPCReactProvider>
             <NuqsAdapter>{children}</NuqsAdapter>
           </TRPCReactProvider>
-        </Provide>
+        </Provider>
       </body>
     </html>
   );

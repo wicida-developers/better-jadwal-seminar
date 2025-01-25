@@ -51,6 +51,28 @@ app.get("/seminars", async (c) => {
   }
 });
 
+app.get("/seminars/last-updated", async (c) => {
+  try {
+    const db = d1Database(c.env.DB);
+    const lastUpdated = await db.KV.get("last_updated");
+
+    return c.json({
+      success: true,
+      data: lastUpdated,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return c.json(
+        {
+          success: false,
+          message: error.message,
+        },
+        500
+      );
+    }
+  }
+});
+
 export default {
   fetch: app.fetch,
   scheduled: scheduler,

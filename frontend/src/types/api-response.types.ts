@@ -1,6 +1,13 @@
 export type IPAPIResponse = {
   success: boolean;
+  meta: Meta;
   data: Data;
+};
+
+export type Meta = {
+  limit: number;
+  page: number;
+  pageCount: number;
 };
 
 export type Data = {

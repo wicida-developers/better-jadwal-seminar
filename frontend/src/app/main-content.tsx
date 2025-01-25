@@ -34,9 +34,49 @@ import { Input } from "@/components/ui/input";
 import SeminarCard from "@/components/seminar-card";
 import Loading from "./loading";
 import { id } from "date-fns/locale";
+import { useEffect, useRef } from "react";
 
 export default function MainContent() {
-  const { data, isPending } = api.seminar.getList.useQuery();
+  const { data: lastUpdated } = api.seminar.getLastUpdated.useQuery();
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
+    api.seminar.getList.useInfiniteQuery(
+      {
+        page: 1,
+        limit: 10,
+      },
+      {
+        getNextPageParam: (lastPage) =>
+          lastPage.meta.page < lastPage.meta.pageCount
+            ? lastPage.meta.page + 1
+            : undefined,
+      },
+    );
+
+  const observerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const currentObserver = observerRef.current;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1.0 },
+    );
+
+    if (currentObserver) {
+      observer.observe(currentObserver);
+    }
+
+    return () => {
+      if (currentObserver) {
+        observer.unobserve(currentObserver);
+      }
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const [query, setQuery] = useQueryState<string>("query", parseAsString);
 
@@ -68,11 +108,14 @@ export default function MainContent() {
 
   if (isPending) return <Loading />;
 
-  const filteredSeminars = data?.seminars
+  const filteredSeminars = data?.pages
+    .flatMap((page) => page.data)
     .filter((seminar) => {
       // Filter by date
       if (date?.from) {
-        const seminarDate = parseISO(format(seminar.datetime, "yyyy-MM-dd"));
+        const seminarDate = parseISO(
+          format(new Date(seminar.datetime), "yyyy-MM-dd"),
+        );
         const start = startOfDay(date.from);
         const end = date.to ? endOfDay(date.to) : endOfDay(date.from);
 
@@ -116,10 +159,10 @@ export default function MainContent() {
     <main className="px-4 py-8">
       {/* Last Updated */}
       <div className="mb-4 w-fit rounded-md bg-muted px-4 py-2 text-muted-foreground">
-        {data?.seminars && (
+        {lastUpdated && (
           <p className="text-sm">
             Terakhir diupdate:{" "}
-            {format(new Date(data.lastUpdated ?? ""), "PPpp", {
+            {format(new Date(lastUpdated ?? ""), "PPpp", {
               locale: id,
             })}
           </p>
@@ -284,13 +327,17 @@ export default function MainContent() {
         {filteredSeminars?.length === 0 ? (
           <div className="flex min-h-[200px] w-full items-center justify-center">
             <p className="text-center text-muted-foreground">
-              No Seminars avaliable or no seminars match the filter
+              No Seminars available or no seminars match the filter
             </p>
           </div>
         ) : (
-          filteredSeminars?.map((seminar, idx) => (
-            <SeminarCard key={idx} idx={idx} seminar={seminar} />
-          ))
+          <>
+            {filteredSeminars?.map((seminar, idx) => (
+              <SeminarCard key={idx} idx={idx} seminar={seminar} />
+            ))}
+            {isFetchingNextPage && <p>Loading more...</p>}
+            <div ref={observerRef} className="h-1 w-full" />
+          </>
         )}
       </div>
     </main>

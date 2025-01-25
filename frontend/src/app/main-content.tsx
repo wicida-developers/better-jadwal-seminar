@@ -170,7 +170,7 @@ export default function MainContent() {
             onValueChange={(value) => setType(value as SeminarType)}
           >
             <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="pilih tipe" />
+              <SelectValue placeholder="Pilih tipe" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>

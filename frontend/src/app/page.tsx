@@ -51,6 +51,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { MajorsList, seminarTypes } from "@/lib/constants";
 import { parseAsString, useQueryState } from "nuqs";
 import { Input } from "@/components/ui/input";
+import { ModeToggle } from "@/components/mode-toggle";
+import SeminarCard from "@/components/seminar-card";
 
 export default function Home() {
   const [seminars, ctx] = api.seminar.getList.useSuspenseQuery();
@@ -126,12 +128,17 @@ export default function Home() {
       (a, b) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime(),
     );
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
   return (
     <div className="bg-background min-h-screen">
-      <header className="w-full border-b">
-        <div className="px-4 py-6">
+      <header className="bg-primary-foreground flex items-center justify-between px-4 py-6 text-white">
+        <div className="">
           <h1 className="text-left text-3xl font-bold">Jadwal Seminar</h1>
         </div>
+        <ModeToggle />
       </header>
       <main className="px-4 py-8">
         <div className="mb-4 flex items-center justify-between gap-2">
@@ -140,7 +147,7 @@ export default function Home() {
               type="text"
               placeholder="Search seminar..."
               value={query ?? ""}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={handleSearch}
               className="border-input bg-background h-10 w-full rounded-md border px-3 pl-10 text-sm"
             />
             {query ? (
@@ -271,83 +278,7 @@ export default function Home() {
         {/* List Seminar Card */}
         <div className="flex flex-wrap gap-4">
           {filteredSeminars.map((seminar, idx) => (
-            <Card key={idx} className="w-full md:w-[calc(50%-1rem)]">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>{seminar.title}</CardTitle>
-                  <Badge
-                    className={cn(
-                      seminar.major === Major.TI &&
-                        "bg-blue-500 hover:bg-blue-600",
-                      seminar.major === Major.SI &&
-                        "bg-yellow-500 hover:bg-yellow-600",
-                      seminar.major === Major.BD &&
-                        "bg-green-500 hover:bg-green-600",
-                      "text-white",
-                    )}
-                  >
-                    {seminar.major}
-                  </Badge>
-                </div>
-                <CardDescription>{seminar.studentName}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-2 flex items-center gap-2">
-                  {seminar.seminarType === SeminarType.Seminar1 && (
-                    <FileText className="h-4 w-4" />
-                  )}
-                  {seminar.seminarType === SeminarType.Seminar2 && (
-                    <FileCheck className="h-4 w-4" />
-                  )}
-                  {seminar.seminarType === SeminarType.Pendadaran && (
-                    <GraduationCap className="h-4 w-4" />
-                  )}
-                  {seminar.seminarType === SeminarType.SeminarKKP && (
-                    <FileText className="h-4 w-4" />
-                  )}
-                  {seminar.seminarType === SeminarType.SeminarPI && (
-                    <FileText className="h-4 w-4" />
-                  )}
-                  <span>{seminar.seminarType}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CalendarIcon className="h-4 w-4" />
-                  <span>
-                    {format(seminar.datetime, "PPP", {
-                      locale: id,
-                    })}
-                  </span>
-                </div>
-                <div className="mt-1 flex items-center gap-2">
-                  <ClockIcon className="h-4 w-4" />
-                  <span>
-                    {format(seminar.datetime, "HH:mm", {
-                      locale: id,
-                    })}
-                  </span>
-                </div>
-                <div className="mt-1 flex flex-col gap-2">
-                  {seminar.advisors.map((advisor, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <UserIcon className="h-4 w-4" />
-                      <span>
-                        Pembimbing {index === 0 ? "Utama" : "Kedua"}: {advisor}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-1 flex flex-col gap-2">
-                  {seminar.examiners.map((examiner, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <UserIcon className="h-4 w-4" />
-                      <span>
-                        {index === 0 ? "Ketua" : "Anggota"} Penguji: {examiner}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <SeminarCard key={idx} idx={idx} seminar={seminar} />
           ))}
         </div>
 

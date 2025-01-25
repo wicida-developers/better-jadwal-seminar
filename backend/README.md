@@ -6,6 +6,11 @@
 
 Endpoint: GET `/seminars`
 
+Query Parameters:
+
+- `page` (optional): Page number, default is 1
+- `limit` (optional): Number of items per page, default is 10
+
 Response Body:
 
 ```

@@ -253,13 +253,14 @@ export default function MainContent() {
           </Popover>
 
           {/* Clear Filters Button */}
-          {(date?.from ?? major) && (
+          {(date?.from ?? major ?? type) && (
             <Button
               variant="ghost"
               size="icon"
               onClick={() => {
                 void setDate(null);
                 void setMajor(null);
+                void setType(null);
               }}
               className="h-10 w-10"
             >

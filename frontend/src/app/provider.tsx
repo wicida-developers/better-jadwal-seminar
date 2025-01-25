@@ -1,4 +1,4 @@
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/hybrid-tooltip";
 import { ThemeProvider } from "@/providers/theme-providers";
 import React from "react";
 

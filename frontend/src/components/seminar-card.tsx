@@ -20,8 +20,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { Tooltip, TooltipContent } from "./ui/tooltip";
-import { TooltipTrigger } from "@radix-ui/react-tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "./ui/hybrid-tooltip";
 
 interface BadgeTooltip {
   major: Major;
@@ -53,7 +52,7 @@ const BadgeTooltip: React.FC<BadgeTooltip> = memo(({ major }) => {
             major === Major.TI && "bg-blue-500 hover:bg-blue-600",
             major === Major.SI && "bg-yellow-500 hover:bg-yellow-600",
             major === Major.BD && "bg-green-500 hover:bg-green-600",
-            "text-white",
+            "text-white hover:cursor-pointer",
           )}
         >
           {major}
@@ -64,7 +63,7 @@ const BadgeTooltip: React.FC<BadgeTooltip> = memo(({ major }) => {
           major === Major.TI && "bg-blue-500",
           major === Major.SI && "bg-yellow-500",
           major === Major.BD && "bg-green-500",
-          "rounded-full text-white",
+          "w-fit rounded-full px-4 py-2 text-white",
         )}
       >
         {majorText}

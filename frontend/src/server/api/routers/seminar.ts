@@ -16,6 +16,6 @@ export const seminarRouter = createTRPCRouter({
       throw new Error("Failed to fetch seminars");
     }
 
-    return data.seminars;
+    return data;
   }),
 });

@@ -13,7 +13,7 @@ const app = new Hono<{ Bindings: Bindings }>();
 app.use(logger());
 app.use(cors({ origin: "*" }));
 
-app.get("/seminars/all", async (c) => {
+app.get("/seminars", async (c) => {
   try {
     const db = d1Database(c.env.DB);
 

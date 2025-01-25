@@ -1,46 +1,46 @@
-import { Hono } from 'hono'
-import { cors } from 'hono/cors'
-import { logger } from 'hono/logger'
-import { d1Database } from './libs/d1-database'
-import { scheduler } from './scheduler'
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { d1Database } from "./libs/d1-database";
+import { scheduler } from "./scheduler";
 
 type Bindings = {
-  DB: D1Database
-}
+  DB: D1Database;
+};
 
-const app = new Hono<{ Bindings: Bindings }>()
+const app = new Hono<{ Bindings: Bindings }>();
 
-app.use(logger())
-app.use(cors({ origin: '*' }))
+app.use(logger());
+app.use(cors({ origin: "*" }));
 
-app.get('/seminars', async (c) => {
+app.get("/seminars/all", async (c) => {
   try {
-    const db = d1Database(c.env.DB)
+    const db = d1Database(c.env.DB);
 
-    const seminars = await db.seminar.getAll()
-    const lastUpdated = await db.KV.get('last_updated')
+    const seminars = await db.seminar.getAll();
+    const lastUpdated = await db.KV.get("last_updated");
 
     return c.json({
       success: true,
       data: {
         lastUpdated,
-        seminars
-      }
-    })
+        seminars,
+      },
+    });
   } catch (error) {
     if (error instanceof Error) {
       return c.json(
         {
           success: false,
-          message: error.message
+          message: error.message,
         },
         500
-      )
+      );
     }
   }
-})
+});
 
 export default {
   fetch: app.fetch,
-  scheduled: scheduler
-}
+  scheduled: scheduler,
+};

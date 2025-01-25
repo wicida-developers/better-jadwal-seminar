@@ -1,7 +1,16 @@
 import { ModeToggle } from "@/components/mode-toggle";
-import MainContent from "./main-content";
+import { ViewToggle } from "@/components/view-toggle";
+import SwitchContent from "./switch-content";
 
-export default async function Home() {
+interface HomeProps {
+  searchParams: Promise<{
+    view: "card" | "table";
+  }>;
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const { view } = await searchParams;
+
   return (
     <div className="min-h-screen bg-background">
       <header className="flex items-center justify-between bg-primary-foreground px-4 py-6 text-white">
@@ -10,9 +19,12 @@ export default async function Home() {
             Jadwal Seminar
           </h1>
         </div>
-        <ModeToggle />
+        <div className="flex items-center gap-4">
+          <ModeToggle />
+          <ViewToggle />
+        </div>
       </header>
-      <MainContent />
+      <SwitchContent view={view} />
     </div>
   );
 }

@@ -20,8 +20,9 @@ export type Seminar = {
 };
 
 export enum Major {
-  Si = "SI",
+  SI = "SI",
   TI = "TI",
+  BD = "BD",
 }
 
 export enum Room {

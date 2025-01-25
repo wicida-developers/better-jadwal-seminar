@@ -1,5 +1,6 @@
 {
   "name": "backend",
+  "version": "",
   "scripts": {
     "dev": "wrangler dev --test-scheduled",
     "deploy": "wrangler deploy --minify",

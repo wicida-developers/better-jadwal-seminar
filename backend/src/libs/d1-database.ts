@@ -1,4 +1,4 @@
-type SeminarRecord = {
+export type SeminarRecord = {
   title: string
   seminarType: string
   studentName: string
@@ -12,8 +12,8 @@ type SeminarRecord = {
 export function d1Database(d1: D1Database) {
   return {
     seminar: {
-      async getAll() {
-        const stmt = d1.prepare(`SELECT * FROM seminars`)
+      async get(limit: number, offset: number) {
+        const stmt = d1.prepare('SELECT * FROM seminars LIMIT ? OFFSET ?').bind(limit.toString(), offset.toString())
         const { results } = await stmt.run<SeminarRecord>()
 
         const data = results.map(({ advisors, examiners, ...rest }) => ({
@@ -23,6 +23,11 @@ export function d1Database(d1: D1Database) {
         }))
 
         return data
+      },
+      async count() {
+        const stmt = d1.prepare('SELECT COUNT(*) AS total FROM seminars')
+        const { results } = await stmt.run<{ total: number }>()
+        return results[0].total
       },
       async update(data: SeminarRecord[]) {
         const stmt = d1.prepare(

@@ -1,58 +1,24 @@
-import * as api from '@/utils/api'
-import { useAtom } from 'jotai'
-import { useEffect } from 'react'
-import { lastUpdatedAtom, searchAtom, seminarsAtom } from './stores'
+import usePagination from './hooks/use-pagination'
+import useSearch from './hooks/use-search'
+import useSeminars from './hooks/use-seminars'
 import { majors, seminarTypes } from './utils/cosntant'
 import { datetimeFullFormater, datetimeShortFormater } from './utils/helpers'
 
 function App() {
-  const [seminars, setSeminars] = useAtom(seminarsAtom)
-  const [lastUpdated, setLastUpdated] = useAtom(lastUpdatedAtom)
-  const [searchQuery, setSearchQuery] = useAtom(searchAtom)
+  const { seminars: allSeminars, lastUpdated } = useSeminars()
+  const { filteredData: filteredSeminars, searchHandler } = useSearch(allSeminars)
+  const {
+    currentData: seminars,
+    hasNextPage,
+    hasPrevPage,
+    nextPage,
+    prevPage,
+    offset,
+    totalItems
+  } = usePagination(filteredSeminars)
 
-  useEffect(() => {
-    async function checkLastUpdated() {
-      const _lastUpdated = await api.getLastUpdatedInfo()
-
-      if (!lastUpdated || new Date(_lastUpdated) > new Date(lastUpdated)) {
-        setLastUpdated(_lastUpdated)
-        return true
-      }
-
-      return false
-    }
-
-    async function fetchSeminars() {
-      const seminars = await api.getAllSeminars()
-      setSeminars(seminars)
-    }
-
-    ;(async () => {
-      const isNeedToUpdate = await checkLastUpdated()
-      if (!seminars.length || isNeedToUpdate) {
-        await fetchSeminars()
-      }
-    })()
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const seminarList = seminars.filter(({ studentName, title, seminarType, advisors, examiners, room }) => {
-    return (
-      studentName.toLowerCase().includes(searchQuery) ||
-      title.toLowerCase().includes(searchQuery) ||
-      seminarType.toLowerCase().includes(searchQuery) ||
-      advisors.join(' ').toLowerCase().includes(searchQuery) ||
-      examiners.join(' ').toLowerCase().includes(searchQuery) ||
-      room.toLowerCase().includes(searchQuery)
-    )
-  })
-
-  const handleSearch = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(ev.target.value.toLowerCase())
-  }
   return (
-    <main className="mx-4 max-w-[1384px] lg:mx-auto mb-12 mt-6">
+    <main className="mx-4 max-w-[1384px] lg:mx-auto mb-20 mt-6">
       <h1 className="text-3xl my-4 font-bold">
         Jadwal Seminar{' '}
         <span className="text-sm text-base-content/75 font-normal">
@@ -67,7 +33,7 @@ function App() {
               <path d="m21 21-4.3-4.3"></path>
             </g>
           </svg>
-          <input type="search" placeholder="Search" onInput={handleSearch} />
+          <input type="search" placeholder="Search" onInput={searchHandler} />
         </label>
         <div className="flex gap-x-2.5 w-full">
           <select
@@ -111,54 +77,54 @@ function App() {
             </tr>
           </thead>
           <tbody className="text-sm">
-            {!seminarList.length ? (
+            {!seminars.length ? (
               <tr>
                 <td colSpan={8}>No seminars found</td>
               </tr>
             ) : (
-              seminarList
-                .slice(0, 10)
-                .map(({ studentName, title, seminarType, major, advisors, examiners, room, datetime }, i) => (
-                  <tr key={i}>
-                    <td className="w-2/12">{title}</td>
-                    <td className="w-1/12">{seminarType}</td>
-                    <td className="w-2/12">{studentName}</td>
-                    <td className="w-1/12">
-                      {major === 'TI' && <div className="badge badge-sm badge-info">TI</div>}
-                      {major === 'SI' && <div className="badge badge-sm badge-warning">SI</div>}
-                      {major === 'BD' && <div className="badge badge-sm badge-success">BD</div>}
-                    </td>
-                    <td className="w-2/12">
-                      <ul className="list-disc">
-                        {advisors.map((advisor, i) => (
-                          <li key={i}>{advisor}</li>
-                        ))}
-                      </ul>
-                    </td>
-                    <td className="w-2/12">
-                      <ul className="list-disc">
-                        {examiners.map((examiner, i) => (
-                          <li key={i}>{examiner}</li>
-                        ))}
-                      </ul>
-                    </td>
-                    <td className="w-2/12">
-                      {room}
-                      {';'} <br />
-                      {datetimeFullFormater(datetime)}
-                    </td>
-                  </tr>
-                ))
+              seminars.map(({ studentName, title, seminarType, major, advisors, examiners, room, datetime }, i) => (
+                <tr key={i}>
+                  <td className="w-2/12">{title}</td>
+                  <td className="w-1/12">{seminarType}</td>
+                  <td className="w-2/12">{studentName}</td>
+                  <td className="w-1/12">
+                    {major === 'TI' && <div className="btn badge badge-sm badge-info">TI</div>}
+                    {major === 'SI' && <div className="btn badge badge-sm badge-warning">SI</div>}
+                    {major === 'BD' && <div className="btn badge badge-sm badge-success">BD</div>}
+                  </td>
+                  <td className="w-2/12">
+                    <ul className="list-disc">
+                      {advisors.map((advisor, i) => (
+                        <li key={i}>{advisor}</li>
+                      ))}
+                    </ul>
+                  </td>
+                  <td className="w-2/12">
+                    <ul className="list-disc">
+                      {examiners.map((examiner, i) => (
+                        <li key={i}>{examiner}</li>
+                      ))}
+                    </ul>
+                  </td>
+                  <td className="w-2/12">
+                    {room}
+                    {';'} <br />
+                    {datetimeFullFormater(datetime)}
+                  </td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>
       </div>
       <div className="join flex justify-end">
-        <button className="join-item btn" onClick={() => {}}>
+        <button className="join-item btn" onClick={prevPage} disabled={!hasPrevPage}>
           «
         </button>
-        <button className="join-item btn">1-10 of {seminarList.length}</button>
-        <button className="join-item btn" onClick={() => {}}>
+        <button className="join-item btn">
+          {offset + 1} - {offset + seminars.length} of {totalItems}
+        </button>
+        <button className="join-item btn" onClick={nextPage} disabled={!hasNextPage}>
           »
         </button>
       </div>

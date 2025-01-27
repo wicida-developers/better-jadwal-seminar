@@ -9,6 +9,8 @@ export const seminarsAtom = atomWithStorage<Seminar[]>(
 
 export const searchAtom = atom<string>('')
 
+export const pageAtom = atom(1)
+
 export const lastUpdatedAtom = atomWithStorage<string>(
   'lastUpdated',
   // idk why it store ""string"" in localStorage, so it needs to be parsed

@@ -3,6 +3,7 @@ import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 import { lastUpdatedAtom, searchAtom, seminarsAtom } from './stores'
 import { majors, seminarTypes } from './utils/cosntant'
+import { datetimeFullFormater, datetimeShortFormater } from './utils/helpers'
 
 function App() {
   const [seminars, setSeminars] = useAtom(seminarsAtom)
@@ -55,11 +56,11 @@ function App() {
       <h1 className="text-3xl my-4 font-bold">
         Jadwal Seminar{' '}
         <span className="text-sm text-base-content/75 font-normal">
-          Terakhir diperbarui: {new Date(lastUpdated).toLocaleString('ID', { dateStyle: 'medium', timeStyle: 'short' })}
+          Terakhir diperbarui: {lastUpdated ? datetimeShortFormater(lastUpdated) : 'Loading...'}
         </span>
       </h1>
       <div className="flex flex-col lg:flex-row gap-2.5">
-        <label className="w-full lg:w-1/3 input input-sm">
+        <label className="w-full lg:w-1/3 input input-sm shadow-xs">
           <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
               <circle cx="11" cy="11" r="8"></circle>
@@ -69,15 +70,21 @@ function App() {
           <input type="search" placeholder="Search" onInput={handleSearch} />
         </label>
         <div className="flex gap-x-2.5 w-full">
-          <select onChange={(ev) => alert(ev.currentTarget.value)} className="w-1/2 lg:w-1/4 select select-sm">
+          <select
+            onChange={(ev) => alert(ev.currentTarget.value)}
+            className="w-1/2 lg:w-1/4 select select-sm shadow-xs"
+          >
             <option disabled selected value="">
-              Pilih Jurusan
+              Pilih Prodi
             </option>
             {majors.map((major, i) => (
               <option key={i}>{major}</option>
             ))}
           </select>
-          <select onChange={(ev) => alert(ev.currentTarget.value)} className="w-1/2 lg:w-1/4 select select-sm">
+          <select
+            onChange={(ev) => alert(ev.currentTarget.value)}
+            className="w-1/2 lg:w-1/4 select select-sm shadow-xs"
+          >
             <option disabled selected value="">
               Pilih Tipe Seminar
             </option>
@@ -87,19 +94,20 @@ function App() {
           </select>
         </div>
       </div>
-      <div className="overflow-x-auto my-4 rounded-lg border border-base-content/5 bg-base-100">
+      <div className="overflow-x-auto my-4 rounded-lg border border-base-content/5 bg-base-100 shadow">
         <table className="table">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Seminar Type</th>
-              <th>Student Name</th>
-              <th>Major</th>
-              <th>Advisors</th>
-              <th>Examiners</th>
+              <th>Judul</th>
               <th>
-                Schedule <small>(Date)</small>
+                Tipe <br />
+                Seminar
               </th>
+              <th>Mahasiswa</th>
+              <th>Prodi</th>
+              <th>Pembimbing</th>
+              <th>Penguji</th>
+              <th>Jadwal & Ruangan</th>
             </tr>
           </thead>
           <tbody className="text-sm">
@@ -115,7 +123,11 @@ function App() {
                     <td className="w-2/12">{title}</td>
                     <td className="w-1/12">{seminarType}</td>
                     <td className="w-2/12">{studentName}</td>
-                    <td className="w-1/12">{major}</td>
+                    <td className="w-1/12">
+                      {major === 'TI' && <div className="badge badge-sm badge-info">TI</div>}
+                      {major === 'SI' && <div className="badge badge-sm badge-warning">SI</div>}
+                      {major === 'BD' && <div className="badge badge-sm badge-success">BD</div>}
+                    </td>
                     <td className="w-2/12">
                       <ul className="list-disc">
                         {advisors.map((advisor, i) => (
@@ -133,7 +145,7 @@ function App() {
                     <td className="w-2/12">
                       {room}
                       {';'} <br />
-                      {new Date(datetime).toLocaleDateString('ID', { dateStyle: 'full' })}
+                      {datetimeFullFormater(datetime)}
                     </td>
                   </tr>
                 ))

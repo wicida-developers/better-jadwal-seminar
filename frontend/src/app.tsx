@@ -1,8 +1,8 @@
-import '@/App.css'
 import * as api from '@/utils/api'
 import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 import { lastUpdatedAtom, searchAtom, seminarsAtom } from './stores'
+import { majors, seminarTypes } from './utils/cosntant'
 
 function App() {
   const [seminars, setSeminars] = useAtom(seminarsAtom)
@@ -50,79 +50,107 @@ function App() {
   const handleSearch = (ev: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(ev.target.value.toLowerCase())
   }
-
   return (
-    <>
-      <h2>
-        Jadwal Seminar |{' '}
-        <small>
+    <main className="mx-4 max-w-[1384px] lg:mx-auto mb-12 mt-6">
+      <h1 className="text-3xl my-4 font-bold">
+        Jadwal Seminar{' '}
+        <span className="text-sm text-base-content/75 font-normal">
           Terakhir diperbarui: {new Date(lastUpdated).toLocaleString('ID', { dateStyle: 'medium', timeStyle: 'short' })}
-        </small>
-      </h2>
-      <br />
-      <input className="search" type="text" onInput={handleSearch} />
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Seminar Type</th>
-            <th>Student Name</th>
-            <th>Major</th>
-            <th>Advisors</th>
-            <th>Examiners</th>
-            <th>
-              Schedule <small>(Date)</small>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {!seminarList.length ? (
+        </span>
+      </h1>
+      <div className="flex flex-col lg:flex-row gap-2.5">
+        <label className="w-full lg:w-1/3 input input-sm">
+          <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </g>
+          </svg>
+          <input type="search" placeholder="Search" onInput={handleSearch} />
+        </label>
+        <div className="flex gap-x-2.5 w-full">
+          <select onChange={(ev) => alert(ev.currentTarget.value)} className="w-1/2 lg:w-1/4 select select-sm">
+            <option disabled selected value="">
+              Pilih Jurusan
+            </option>
+            {majors.map((major, i) => (
+              <option key={i}>{major}</option>
+            ))}
+          </select>
+          <select onChange={(ev) => alert(ev.currentTarget.value)} className="w-1/2 lg:w-1/4 select select-sm">
+            <option disabled selected value="">
+              Pilih Tipe Seminar
+            </option>
+            {seminarTypes.map((type, i) => (
+              <option key={i}>{type}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="overflow-x-auto my-4 rounded-lg border border-base-content/5 bg-base-100">
+        <table className="table">
+          <thead>
             <tr>
-              <td colSpan={8}>No seminars found</td>
+              <th>Title</th>
+              <th>Seminar Type</th>
+              <th>Student Name</th>
+              <th>Major</th>
+              <th>Advisors</th>
+              <th>Examiners</th>
+              <th>
+                Schedule <small>(Date)</small>
+              </th>
             </tr>
-          ) : (
-            seminarList
-              .slice(0, 10)
-              .map(({ studentName, title, seminarType, major, advisors, examiners, room, datetime }, i) => (
-                <tr key={i}>
-                  <td>{title}</td>
-                  <td>{seminarType}</td>
-                  <td>{studentName}</td>
-                  <td>{major}</td>
-                  <td className="al">
-                    <ul>
-                      {advisors.map((advisor, i) => {
-                        return <li key={i}>{advisor}</li>
-                      })}
-                    </ul>
-                  </td>
-                  <td className="al">
-                    <ul>
-                      {examiners.map((examiner, i) => {
-                        return <li key={i}>{examiner}</li>
-                      })}
-                    </ul>
-                  </td>
-                  <td className="al">
-                    {room}
-                    {';'} <br />
-                    {new Date(datetime).toLocaleDateString('ID', { dateStyle: 'full' })}
-                  </td>
-                </tr>
-              ))
-          )}
-        </tbody>
-      </table>
-      <div>
-        <button onClick={() => {}} disabled>
-          Prev
+          </thead>
+          <tbody className="text-sm">
+            {!seminarList.length ? (
+              <tr>
+                <td colSpan={8}>No seminars found</td>
+              </tr>
+            ) : (
+              seminarList
+                .slice(0, 10)
+                .map(({ studentName, title, seminarType, major, advisors, examiners, room, datetime }, i) => (
+                  <tr key={i}>
+                    <td className="w-2/12">{title}</td>
+                    <td className="w-1/12">{seminarType}</td>
+                    <td className="w-2/12">{studentName}</td>
+                    <td className="w-1/12">{major}</td>
+                    <td className="w-2/12">
+                      <ul className="list-disc">
+                        {advisors.map((advisor, i) => (
+                          <li key={i}>{advisor}</li>
+                        ))}
+                      </ul>
+                    </td>
+                    <td className="w-2/12">
+                      <ul className="list-disc">
+                        {examiners.map((examiner, i) => (
+                          <li key={i}>{examiner}</li>
+                        ))}
+                      </ul>
+                    </td>
+                    <td className="w-2/12">
+                      {room}
+                      {';'} <br />
+                      {new Date(datetime).toLocaleDateString('ID', { dateStyle: 'full' })}
+                    </td>
+                  </tr>
+                ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div className="join flex justify-end">
+        <button className="join-item btn" onClick={() => {}}>
+          «
         </button>
-        <span>1-10 of {seminarList.length} seminars</span>
-        <button onClick={() => {}} disabled>
-          Next
+        <button className="join-item btn">1-10 of {seminarList.length}</button>
+        <button className="join-item btn" onClick={() => {}}>
+          »
         </button>
       </div>
-    </>
+    </main>
   )
 }
 

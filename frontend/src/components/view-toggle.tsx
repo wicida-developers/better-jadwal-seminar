@@ -9,15 +9,27 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useQueryState } from "nuqs";
 import { LayoutGrid, Table } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export function ViewToggle() {
-  const [view, setView] = useQueryState<"card" | "table">("view", {
-    parse: (value) => value as "card" | "table",
-    serialize: (value) => value,
-    defaultValue: "card",
-  });
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = React.useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  const view = searchParams.get("view") ?? "card";
 
   return (
     <DropdownMenu>
@@ -33,10 +45,20 @@ export function ViewToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setView("card")}>
+        <DropdownMenuItem
+          onClick={() => {
+            router.push(pathname + "?" + createQueryString("view", "card"));
+            window.location.reload();
+          }}
+        >
           Card
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setView("table")}>
+        <DropdownMenuItem
+          onClick={() => {
+            router.push(pathname + "?" + createQueryString("view", "table"));
+            window.location.reload();
+          }}
+        >
           Table
         </DropdownMenuItem>
       </DropdownMenuContent>

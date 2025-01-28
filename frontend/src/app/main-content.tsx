@@ -35,6 +35,7 @@ import SeminarCard from "@/components/seminar-card";
 import Loading from "./loading";
 import { id } from "date-fns/locale";
 import { useEffect, useRef } from "react";
+import SeminarCardLoader from "@/components/card-loader";
 
 export default function MainContent() {
   const { data: lastUpdated } = api.seminar.getLastUpdated.useQuery();
@@ -335,7 +336,10 @@ export default function MainContent() {
             {filteredSeminars?.map((seminar, idx) => (
               <SeminarCard key={idx} idx={idx} seminar={seminar} />
             ))}
-            {isFetchingNextPage && <p>Loading more...</p>}
+
+            {/* Next page loading skeletons */}
+            {isFetchingNextPage && <SeminarCardLoader />}
+
             <div ref={observerRef} className="h-1 w-full" />
           </>
         )}

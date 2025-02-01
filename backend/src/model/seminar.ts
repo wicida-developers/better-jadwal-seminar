@@ -22,6 +22,18 @@ export const seminarModel = (d1: D1Database) => ({
 
     return data
   },
+  async getAll() {
+    const stmt = d1.prepare('SELECT * FROM seminars')
+    const { results } = await stmt.run<SeminarRecord>()
+
+    const data = results.map(({ advisors, examiners, ...rest }) => ({
+      ...rest,
+      advisors: advisors.split(';'),
+      examiners: examiners.split(';')
+    }))
+
+    return data
+  },
   async count() {
     const stmt = d1.prepare('SELECT COUNT(*) AS total FROM seminars')
     const { results } = await stmt.run<{ total: number }>()

@@ -2,7 +2,6 @@
   "name": "better-jadwal-seminar",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "build:frontend": "cd frontend && pnpm run build",
     "dev:frontend": "cd frontend && pnpm run dev"

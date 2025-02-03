@@ -129,7 +129,7 @@ export default function MainContent() {
           </p>
         )}
       </div>
-      <div className="lx:pr-4 mb-4 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div className="mb-4 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:pr-4">
         {/* Search Input */}
         <div className="relative w-full lg:w-1/2">
           <Input

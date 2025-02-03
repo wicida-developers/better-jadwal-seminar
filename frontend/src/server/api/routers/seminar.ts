@@ -1,6 +1,10 @@
 import { env } from "@/env";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { type IPAPIResponse } from "@/types/api-response.types";
+import {
+  type IPAPIResponseAll,
+  type IPAPIResponseLastUpdated,
+  type IPAPIResponse,
+} from "@/types/api-response.types";
 import { z } from "zod";
 
 export const seminarRouter = createTRPCRouter({
@@ -11,7 +15,7 @@ export const seminarRouter = createTRPCRouter({
       throw new Error("Failed to fetch seminars");
     }
 
-    const { success, data, meta } = (await response.json()) as IPAPIResponse;
+    const { success, data } = (await response.json()) as IPAPIResponseAll;
 
     if (!success) {
       throw new Error("Failed to fetch seminars");
@@ -19,7 +23,6 @@ export const seminarRouter = createTRPCRouter({
 
     return {
       seminars: data.seminars,
-      meta,
     };
   }),
 
@@ -59,7 +62,8 @@ export const seminarRouter = createTRPCRouter({
       throw new Error("Failed to fetch last updated");
     }
 
-    const { success, data } = (await response.json()) as IPAPIResponse;
+    const { success, data } =
+      (await response.json()) as IPAPIResponseLastUpdated;
 
     if (!success) {
       throw new Error("Failed to fetch last updated");

@@ -1,28 +1,41 @@
 "use client";
 
-import React from "react";
-import { DataTable } from "./data-table";
+import React, { useMemo } from "react";
 import { api } from "@/trpc/react";
 import { columns } from "./columns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
+import usePaginateParams from "@/hooks/use-paginate-params";
+import { useTablePagination } from "@/hooks/use-table-pagination";
+import { PaginatedDataTable } from "@/components/paginated-data-table";
 
 export default function TableContent() {
+  const { query, page, pageSize } = usePaginateParams({});
+
+  const queryParams = useMemo(
+    () => ({
+      query,
+      page,
+      pageSize,
+    }),
+    [query, page, pageSize],
+  );
+
   const [lastUpdated, status] = api.seminar.getLastUpdated.useSuspenseQuery();
 
-  const { data } = api.seminar.paginate.useInfiniteQuery(
-    {
-      page: 1,
-      limit: 10,
+  const { data, isPending } = api.seminar.paginate.useQuery(queryParams);
+
+  const { tableData, paginationProps } = useTablePagination({
+    data: {
+      data: data?.data ?? [],
+      currentPage: page,
+      pageSize: pageSize,
     },
-    {
-      getNextPageParam: (lastPage) =>
-        lastPage.meta.page < lastPage.meta.pageCount
-          ? lastPage.meta.page + 1
-          : undefined,
-    },
-  );
+    isPending,
+    page,
+    limit: pageSize,
+  });
 
   if (!data) return null;
 
@@ -43,9 +56,11 @@ export default function TableContent() {
           )
         )}
       </div>
-      <DataTable
-        data={data.pages.flatMap((page) => page.data)}
+      <PaginatedDataTable
         columns={columns}
+        data={tableData}
+        pagination={paginationProps}
+        isLoading={isPending}
       />
     </main>
   );

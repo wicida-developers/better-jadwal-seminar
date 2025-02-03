@@ -4,14 +4,25 @@ export type IPAPIResponse = {
   data: Data;
 };
 
+export type IPAPIResponseAll = {
+  success: boolean;
+  data: Data;
+};
+
+export type IPAPIResponseLastUpdated = {
+  success: boolean;
+  data: {
+    lastUpdated: Date;
+  };
+};
+
 export type Meta = {
   limit: number;
   page: number;
-  pageCount: number;
+  pageSize: number;
 };
 
 export type Data = {
-  lastUpdated: Date;
   seminars: Seminar[];
 };
 

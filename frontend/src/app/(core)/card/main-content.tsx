@@ -32,13 +32,13 @@ import { MajorsList, seminarTypes } from "@/lib/constants";
 import { parseAsString, useQueryState } from "nuqs";
 import { Input } from "@/components/ui/input";
 import SeminarCard from "@/components/seminar-card";
-import Loading from "./loading";
+import Loading from "./loader";
 import { id } from "date-fns/locale";
 
 export default function MainContent() {
-  const [lastUpdated] = api.seminar.getLastUpdated.useSuspenseQuery();
+  const { data: lastUpdated } = api.seminar.getLastUpdated.useQuery();
 
-  const [data, status] = api.seminar.getList.useSuspenseQuery();
+  const { data, status } = api.seminar.getList.useQuery();
 
   const [query, setQuery] = useQueryState<string>("query", parseAsString);
 
@@ -68,7 +68,7 @@ export default function MainContent() {
     },
   );
 
-  if (status.isPending) return <Loading />;
+  if (status === "pending") return <Loading />;
 
   const filteredSeminars = data?.seminars
     .filter((seminar) => {

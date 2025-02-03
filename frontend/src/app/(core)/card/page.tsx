@@ -1,14 +1,10 @@
-import MainContent from "@/app/(core)/card/main-content";
-import { api, HydrateClient } from "@/trpc/server";
-import React from "react";
+import React, { Suspense } from "react";
+import MainContent from "./main-content";
 
 export default function CardPage() {
-  void api.seminar.getLastUpdated.prefetch();
-  void api.seminar.getList.prefetch();
-
   return (
-    <HydrateClient>
+    <Suspense>
       <MainContent />
-    </HydrateClient>
+    </Suspense>
   );
 }

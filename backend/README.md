@@ -2,25 +2,15 @@
 
 ## API Documentation
 
-### Get Seminar
+### Get All Seminar
 
 Endpoint: GET `/seminars`
-
-Query Parameters:
-
-- `page` (optional): Page number, default is 1
-- `limit` (optional): Number of items per page, default is 10
 
 Response Body:
 
 ```
 {
   "success": true,
-  "meta": {
-    "page": 1,
-    "limit": 10,
-    "pageCount": 1
-  },
   "data: {
     lastUpdated: "2025-01-01T00:00:00.000Z",
     seminars: [

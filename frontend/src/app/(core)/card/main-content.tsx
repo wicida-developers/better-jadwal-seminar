@@ -34,50 +34,11 @@ import { Input } from "@/components/ui/input";
 import SeminarCard from "@/components/seminar-card";
 import Loading from "./loading";
 import { id } from "date-fns/locale";
-import { useEffect, useRef } from "react";
-import SeminarCardLoader from "@/components/card-loader";
 
 export default function MainContent() {
-  const { data: lastUpdated } = api.seminar.getLastUpdated.useQuery();
+  const [lastUpdated] = api.seminar.getLastUpdated.useSuspenseQuery();
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
-    api.seminar.getList.useInfiniteQuery(
-      {
-        page: 1,
-        limit: 10,
-      },
-      {
-        getNextPageParam: (lastPage) =>
-          lastPage.meta.page < lastPage.meta.pageCount
-            ? lastPage.meta.page + 1
-            : undefined,
-      },
-    );
-
-  const observerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const currentObserver = observerRef.current;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 1.0 },
-    );
-
-    if (currentObserver) {
-      observer.observe(currentObserver);
-    }
-
-    return () => {
-      if (currentObserver) {
-        observer.unobserve(currentObserver);
-      }
-    };
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  const [data, status] = api.seminar.getList.useSuspenseQuery();
 
   const [query, setQuery] = useQueryState<string>("query", parseAsString);
 
@@ -107,10 +68,9 @@ export default function MainContent() {
     },
   );
 
-  if (isPending) return <Loading />;
+  if (status.isPending) return <Loading />;
 
-  const filteredSeminars = data?.pages
-    .flatMap((page) => page.data)
+  const filteredSeminars = data?.seminars
     .filter((seminar) => {
       // Filter by date
       if (date?.from) {
@@ -169,7 +129,7 @@ export default function MainContent() {
           </p>
         )}
       </div>
-      <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="lx:pr-4 mb-4 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         {/* Search Input */}
         <div className="relative w-full lg:w-1/2">
           <Input
@@ -206,7 +166,7 @@ export default function MainContent() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           {/* Type Select */}
           <Select
             value={type ?? ""}
@@ -336,11 +296,6 @@ export default function MainContent() {
             {filteredSeminars?.map((seminar, idx) => (
               <SeminarCard key={idx} idx={idx} seminar={seminar} />
             ))}
-
-            {/* Next page loading skeletons */}
-            {isFetchingNextPage && <SeminarCardLoader />}
-
-            <div ref={observerRef} className="h-1 w-full" />
           </>
         )}
       </div>

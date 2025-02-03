@@ -1,3 +1,4 @@
+import { TooltipProvider } from "@/components/ui/hybrid-tooltip";
 import { ThemeProvider } from "@/providers/theme-providers";
 import React from "react";
 
@@ -13,7 +14,7 @@ export default function Providers({ children }: ProvidersProps) {
       enableSystem
       disableTransitionOnChange
     >
-      {children}
+      <TooltipProvider>{children}</TooltipProvider>
     </ThemeProvider>
   );
 }

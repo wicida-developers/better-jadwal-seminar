@@ -1,16 +1,11 @@
 import { ModeToggle } from "@/components/mode-toggle";
 import { ViewToggle } from "@/components/view-toggle";
-import SwitchContent from "./switch-content";
 
-interface HomeProps {
-  searchParams: Promise<{
-    view: "card" | "table";
-  }>;
+interface CoreLayoutProps {
+  children: React.ReactNode;
 }
 
-export default async function Home({ searchParams }: HomeProps) {
-  const { view } = await searchParams;
-
+export default function CoreLayout({ children }: CoreLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       <header className="flex items-center justify-between bg-primary-foreground px-4 py-6 text-white">
@@ -24,7 +19,7 @@ export default async function Home({ searchParams }: HomeProps) {
           <ViewToggle />
         </div>
       </header>
-      <SwitchContent view={view} />
+      {children}
     </div>
   );
 }

@@ -4,7 +4,26 @@ import { type IPAPIResponse } from "@/types/api-response.types";
 import { z } from "zod";
 
 export const seminarRouter = createTRPCRouter({
-  getList: publicProcedure
+  getList: publicProcedure.query(async () => {
+    const response = await fetch(`${env.BACKEND_URL}/seminars/all`);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch seminars");
+    }
+
+    const { success, data, meta } = (await response.json()) as IPAPIResponse;
+
+    if (!success) {
+      throw new Error("Failed to fetch seminars");
+    }
+
+    return {
+      seminars: data.seminars,
+      meta,
+    };
+  }),
+
+  paginate: publicProcedure
     .input(
       z.object({
         page: z.number().optional(),
@@ -34,7 +53,7 @@ export const seminarRouter = createTRPCRouter({
     }),
 
   getLastUpdated: publicProcedure.query(async () => {
-    const response = await fetch(`${env.BACKEND_URL}/seminars`);
+    const response = await fetch(`${env.BACKEND_URL}/seminars/last-updated`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch last updated");

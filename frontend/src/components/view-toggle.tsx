@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,26 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LayoutGrid, Table } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import cookies from "js-cookie";
 
 export function ViewToggle() {
-  const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  // Get a new searchParams string by merging the current
-  // searchParams with a provided key/value pair
-  const createQueryString = React.useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
+  // Get or set view preference in cookie
+  const setView = (value: string) => {
+    cookies.set("view", value, { expires: 365 });
+    return value;
+  };
 
-      return params.toString();
-    },
-    [searchParams],
-  );
-
-  const view = searchParams.get("view") ?? "card";
+  const view = cookies.get("view") ?? setView("card");
 
   return (
     <DropdownMenu>
@@ -47,16 +39,16 @@ export function ViewToggle() {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onClick={() => {
-            router.push(pathname + "?" + createQueryString("view", "card"));
-            window.location.reload();
+            setView("card");
+            router.push("/card");
           }}
         >
           Card
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
-            router.push(pathname + "?" + createQueryString("view", "table"));
-            window.location.reload();
+            setView("table");
+            router.push("/table");
           }}
         >
           Table

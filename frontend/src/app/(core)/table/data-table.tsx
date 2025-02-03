@@ -1,15 +1,16 @@
 "use client";
+"use no memo";
 
 import {
   type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
-  type SortingState,
-  type ColumnFiltersState,
-  type VisibilityState,
-  getSortedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import {

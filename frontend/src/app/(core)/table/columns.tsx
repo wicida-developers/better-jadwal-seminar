@@ -10,6 +10,7 @@ export const columns: ColumnDef<Seminar>[] = [
   },
   {
     header: "Nama",
+    id: "nama",
     accessorKey: "studentName",
   },
   {

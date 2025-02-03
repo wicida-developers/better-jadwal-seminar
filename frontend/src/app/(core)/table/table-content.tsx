@@ -9,8 +9,7 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
 export default function TableContent() {
-  const { data: lastUpdated, isPending } =
-    api.seminar.getLastUpdated.useQuery();
+  const [lastUpdated, status] = api.seminar.getLastUpdated.useSuspenseQuery();
 
   const { data } = api.seminar.paginate.useInfiniteQuery(
     {
@@ -31,7 +30,7 @@ export default function TableContent() {
     <main className="px-4 py-8">
       {/* Last Updated */}
       <div className="mb-4 w-fit rounded-md bg-muted px-4 py-2 text-muted-foreground">
-        {isPending ? (
+        {status.isPending ? (
           <Skeleton className="h-5 w-64" />
         ) : (
           lastUpdated && (

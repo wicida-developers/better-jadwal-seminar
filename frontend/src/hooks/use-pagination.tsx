@@ -19,13 +19,13 @@ const usePagination = (data: Seminar[]) => {
   const hasNextPage = currentPage < maxPage
 
   const nextPage = () => {
-    if (currentPage < maxPage) {
+    if (hasNextPage) {
       setCurrentPage((prev) => prev + 1)
     }
   }
 
   const prevPage = () => {
-    if (currentPage > 1) {
+    if (hasPrevPage) {
       setCurrentPage((prev) => prev - 1)
     }
   }

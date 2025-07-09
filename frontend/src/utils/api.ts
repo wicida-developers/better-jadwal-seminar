@@ -9,13 +9,13 @@ if (!baseURL) {
 const fetcher = axios.create({ baseURL })
 
 export const getAllSeminars = async () => {
-  const response = await fetcher.get('/seminars?limit=1000')
+  const response = await fetcher.get('/seminars/all')
   const { data } = response.data
   return data.seminars as Seminar[]
 }
 
 export const getLastUpdatedInfo = async () => {
-  const response = await fetcher.get('/seminars/info')
+  const response = await fetcher.get('/seminars/last-updated')
   const { data } = response.data
   return data.lastUpdated as string
 }

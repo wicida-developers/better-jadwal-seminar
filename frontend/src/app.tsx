@@ -1,12 +1,26 @@
+import { useSearchParams } from 'react-router'
 import usePagination from './hooks/use-pagination'
 import useSearch from './hooks/use-search'
 import useSeminars from './hooks/use-seminars'
 import { majors, seminarTypes } from './utils/cosntant'
 import { datetimeFullFormater, datetimeShortFormater } from './utils/helpers'
 
+const majorBadgeTypes = {
+  TI: 'badge-info',
+  SI: 'badge-warning',
+  BD: 'badge-success'
+} as const
+
 function App() {
+  const [searchParams, setSearchParams] = useSearchParams({})
+
   const { seminars: allSeminars, lastUpdated } = useSeminars()
-  const { filteredData: filteredSeminars, searchHandler } = useSearch(allSeminars)
+
+  const { filteredData: filteredSeminars, searchHandler } = useSearch(allSeminars, {
+    major: searchParams.get('major') || '',
+    seminarType: searchParams.get('seminarType') || ''
+  })
+
   const {
     currentData: seminars,
     hasNextPage,
@@ -17,43 +31,57 @@ function App() {
     totalItems
   } = usePagination(filteredSeminars)
 
+  const selectHandler = (selectType: 'major' | 'seminarType', value: string) => {
+    if (!value) {
+      searchParams.delete(selectType)
+      setSearchParams(searchParams)
+      return
+    }
+
+    setSearchParams((prev) => {
+      const prevSearchParams = Object.fromEntries(prev.entries())
+      return {
+        ...prevSearchParams,
+        [selectType]: value
+      }
+    })
+  }
+
   return (
-    <main className="mx-4 max-w-[1384px] lg:mx-auto mb-20 mt-6">
+    <main className="mx-4 py-1.5 max-w-[1384px] lg:mx-auto mb-20 mt-6">
       <h1 className="text-3xl my-4 font-bold">
         Jadwal Seminar{' '}
-        <span className="text-sm text-base-content/75 font-normal">
+        <span className="block text-sm text-base-content/75 font-normal sm:inline">
           Terakhir diperbarui: {lastUpdated ? datetimeShortFormater(lastUpdated) : 'Loading...'}
         </span>
       </h1>
       <div className="flex flex-col lg:flex-row gap-2.5">
-        <label className="w-full lg:w-1/3 input input-sm shadow-xs">
+        <div className="w-full lg:w-1/3 input input-sm shadow-xs">
           <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+            <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.3-4.3"></path>
             </g>
           </svg>
           <input type="search" placeholder="Search" onInput={searchHandler} />
-        </label>
+        </div>
         <div className="flex gap-x-2.5 w-full">
           <select
-            onChange={(ev) => alert(ev.currentTarget.value)}
+            onChange={(ev) => selectHandler('major', ev.currentTarget.value)}
+            value={searchParams.get('major') || ''}
             className="w-1/2 lg:w-1/4 select select-sm shadow-xs"
           >
-            <option disabled selected value="">
-              Pilih Prodi
-            </option>
+            <option value="">Semua Prodi</option>
             {majors.map((major, i) => (
               <option key={i}>{major}</option>
             ))}
           </select>
           <select
-            onChange={(ev) => alert(ev.currentTarget.value)}
+            onChange={(ev) => selectHandler('seminarType', ev.currentTarget.value)}
+            value={searchParams.get('seminarType') || ''}
             className="w-1/2 lg:w-1/4 select select-sm shadow-xs"
           >
-            <option disabled selected value="">
-              Pilih Tipe Seminar
-            </option>
+            <option value="">Semua Tipe Seminar</option>
             {seminarTypes.map((type, i) => (
               <option key={i}>{type}</option>
             ))}
@@ -88,9 +116,9 @@ function App() {
                   <td className="w-1/12">{seminarType}</td>
                   <td className="w-2/12">{studentName}</td>
                   <td className="w-1/12">
-                    {major === 'TI' && <div className="btn badge badge-sm badge-info">TI</div>}
-                    {major === 'SI' && <div className="btn badge badge-sm badge-warning">SI</div>}
-                    {major === 'BD' && <div className="btn badge badge-sm badge-success">BD</div>}
+                    {Object.keys(majorBadgeTypes).includes(major) && (
+                      <div className={`btn badge badge-sm ${majorBadgeTypes[major]}`}>{major}</div>
+                    )}
                   </td>
                   <td className="w-2/12">
                     <ul className="list-disc">

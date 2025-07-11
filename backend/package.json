@@ -8,11 +8,11 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "cheerio": "^1.0.0",
-    "hono": "^4.6.16"
+    "cheerio": "^1.1.0",
+    "hono": "^4.8.4"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250109.0",
-    "wrangler": "^3.101.0"
+    "@cloudflare/workers-types": "^4.20250711.0",
+    "wrangler": "^3.114.11"
   }
 }

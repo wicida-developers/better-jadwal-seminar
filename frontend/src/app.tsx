@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router'
 import useFilter from './hooks/use-filter'
 import usePagination from './hooks/use-pagination'
 import useSeminars from './hooks/use-seminars'
-import { majors, seminarTypes } from './utils/cosntant'
+import { majors, seminarTypes } from './utils/constant'
 import { datetimeFullFormater, datetimeShortFormater } from './utils/helpers'
 
 const majorBadgeTypes = {

@@ -1,8 +1,11 @@
 import { pageAtom, searchAtom } from '@/stores'
 import { Seminar } from '@/types'
 import { useAtom, useSetAtom } from 'jotai'
+import { useSearchParams } from 'react-router'
 
-const useSearch = (data: Seminar[], opts = { major: '', seminarType: '' }) => {
+const useFilter = (data: Seminar[], opts = { major: '', seminarType: '' }) => {
+  const [, setSearchParams] = useSearchParams({})
+
   const [searchQuery, setSearchQuery] = useAtom(searchAtom)
 
   const setPage = useSetAtom(pageAtom)
@@ -26,7 +29,25 @@ const useSearch = (data: Seminar[], opts = { major: '', seminarType: '' }) => {
     setSearchQuery(ev.target.value.toLowerCase())
   }
 
-  return { filteredData, searchHandler }
+  const selectHandler = (selectType: 'major' | 'seminarType', value: string) => {
+    setPage(1)
+    setSearchParams((prev) => {
+      if (!value) {
+        prev.delete(selectType)
+        return prev
+      }
+
+      prev.set(selectType, value)
+      return prev
+      //   const prevSearchParams = Object.fromEntries(prev.entries())
+      //   return {
+      //     ...prevSearchParams,
+      //     [selectType]: value
+      //   }
+    })
+  }
+
+  return { filteredData, searchHandler, selectHandler }
 }
 
-export default useSearch
+export default useFilter

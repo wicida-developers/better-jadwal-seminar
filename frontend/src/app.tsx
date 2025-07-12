@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router'
+import useFilter from './hooks/use-filter'
 import usePagination from './hooks/use-pagination'
-import useSearch from './hooks/use-search'
 import useSeminars from './hooks/use-seminars'
 import { majors, seminarTypes } from './utils/cosntant'
 import { datetimeFullFormater, datetimeShortFormater } from './utils/helpers'
@@ -12,11 +12,15 @@ const majorBadgeTypes = {
 } as const
 
 function App() {
-  const [searchParams, setSearchParams] = useSearchParams({})
+  const [searchParams] = useSearchParams({})
 
   const { seminars: allSeminars, lastUpdated } = useSeminars()
 
-  const { filteredData: filteredSeminars, searchHandler } = useSearch(allSeminars, {
+  const {
+    filteredData: filteredSeminars,
+    searchHandler,
+    selectHandler
+  } = useFilter(allSeminars, {
     major: searchParams.get('major') || '',
     seminarType: searchParams.get('seminarType') || ''
   })
@@ -30,22 +34,6 @@ function App() {
     offset,
     totalItems
   } = usePagination(filteredSeminars)
-
-  const selectHandler = (selectType: 'major' | 'seminarType', value: string) => {
-    if (!value) {
-      searchParams.delete(selectType)
-      setSearchParams(searchParams)
-      return
-    }
-
-    setSearchParams((prev) => {
-      const prevSearchParams = Object.fromEntries(prev.entries())
-      return {
-        ...prevSearchParams,
-        [selectType]: value
-      }
-    })
-  }
 
   return (
     <main className="mx-4 py-1.5 max-w-[1384px] lg:mx-auto mb-20 mt-6">

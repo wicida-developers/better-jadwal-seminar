@@ -5,7 +5,7 @@ compatibility_date = "2025-01-12"
 compatibility_flags = [ "nodejs_compat_v2" ]
 
 [triggers]
-crons = ["0 0-13 * * *"] # trigger scheduled events every hour between 8am and 9pm
+crons = ["0 0-7 * * *"] # trigger scheduled events every hour between 08:00 and 15.00 GMT+8
 
 [[d1_databases]]
 binding = "DB"

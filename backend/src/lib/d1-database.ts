@@ -1,9 +1,19 @@
-import { KVModel } from '../model/kv'
-import { seminarModel } from '../model/seminar'
+import { Kysely } from 'kysely'
+import { D1Dialect } from 'kysely-d1'
+import { kvRepository } from '../repository/kv'
+import { seminarRepository } from '../repository/seminar'
+import type { Database } from '../types'
 
-export function d1Database(d1: D1Database) {
+let db: Kysely<Database> | null = null
+
+export function d1Database(database: D1Database) {
+  if (!db) {
+    const d1Dialect = new D1Dialect({ database })
+    db = new Kysely<Database>({ dialect: d1Dialect })
+  }
+
   return {
-    seminar: seminarModel(d1),
-    KV: KVModel(d1)
+    seminar: seminarRepository(db),
+    kv: kvRepository(db)
   }
 }

@@ -61,7 +61,7 @@ const parseSchedulePage = async (htmlPage: string) => {
       )
       const isoDateFormatted = new Date(datetime).toISOString()
 
-      const room = _datetime.split(/[(00|30|15)] /).pop() || ''
+      const room = _datetime.split(/[(00|30|15|WITA)] /).pop() || ''
 
       return {
         title,
@@ -94,10 +94,9 @@ export const scheduler = async (event: ScheduledEvent, env: Env, ctx: ExecutionC
 
   const data = await parseSchedulePage(schedulePage)
 
-  // console.log(data)
   const db = d1Database(env.DB)
 
-  await db.seminar.reset()
-  await db.seminar.update(data)
-  await db.KV.set('last_updated', new Date().toISOString())
+  await db.seminar.resetSeminars()
+  await db.seminar.addSeminars(data)
+  await db.kv.setValue('last_updated', new Date().toISOString())
 }

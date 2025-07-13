@@ -10,14 +10,12 @@ const seminarRouter = new Hono<{ Bindings: Bindings }>()
 seminarRouter.get('/', async (c) => {
   try {
     const db = d1Database(c.env.DB)
-
-    const total = await db.seminar.count()
+    const total = await db.seminar.getSeminarTotal()
     const page = Number(c.req.query('page')) || 1
     const limit = Number(c.req.query('limit')) || 10
     const offset = (page - 1) * limit
     const pageSize = Math.ceil(total / limit)
-
-    const seminars = await db.seminar.get(limit, offset)
+    const seminars = await db.seminar.getSeminars({ limit, offset })
 
     return c.json({
       success: true,
@@ -40,8 +38,7 @@ seminarRouter.get('/', async (c) => {
 seminarRouter.get('/all', async (c) => {
   try {
     const db = d1Database(c.env.DB)
-
-    const seminars = await db.seminar.getAll()
+    const seminars = await db.seminar.getSeminars()
 
     return c.json({
       success: true,
@@ -59,7 +56,7 @@ seminarRouter.get('/all', async (c) => {
 seminarRouter.get('/last-updated', async (c) => {
   try {
     const db = d1Database(c.env.DB)
-    const lastUpdated = await db.KV.get('last_updated')
+    const lastUpdated = await db.kv.getValue('last_updated')
 
     return c.json({
       success: true,

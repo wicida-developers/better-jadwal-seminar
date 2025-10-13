@@ -59,7 +59,10 @@ const parseSchedulePage = async (htmlPage: string) => {
         /.*(\d{2}) \/ (\d{2}) \/ (\d{4}) Jam (\d+)[.|:](\d+).*/,
         '$3-$2-$1T$4:$5:00+08:00'
       )
-      const isoDateFormatted = new Date(datetime).toISOString()
+
+      const isMatchISODate = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+08:00$/
+
+      const isoDateFormatted = isMatchISODate.test(datetime) ? new Date(datetime).toISOString() : ''
 
       const room = _datetime.split(/[(00|30|15|WITA)] /).pop() || ''
 

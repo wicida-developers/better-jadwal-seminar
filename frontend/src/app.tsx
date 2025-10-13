@@ -36,7 +36,7 @@ function App() {
   } = usePagination(filteredSeminars)
 
   return (
-    <main className="mx-4 py-1.5 max-w-[1384px] lg:mx-auto mb-20 mt-6">
+    <main className="mx-4 py-1.5 max-w-[84rem] xl:mx-auto mb-20 mt-6">
       <h1 className="text-3xl my-4 font-bold">
         Jadwal Seminar{' '}
         <span className="block text-sm text-base-content/75 font-normal sm:inline">

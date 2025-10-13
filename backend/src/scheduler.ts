@@ -43,7 +43,7 @@ const parseSchedulePage = async (htmlPage: string) => {
       return row.map((str) => str.replace(/\s+/g, ' ').trim())
     })
     // convert to object
-    .map(([_datetime, seminarType, _studentName, major, _title]) => {
+    .map(([_datetime, _seminarType, _studentName, major, _title]) => {
       const studentName = _studentName.replace(/^[\d\s]+/g, '')
 
       const [title, lecturers] = _title.split('Pembimbing Utama =').map((str) => str.trim())
@@ -63,6 +63,10 @@ const parseSchedulePage = async (htmlPage: string) => {
       const isMatchISODate = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+08:00$/
 
       const isoDateFormatted = isMatchISODate.test(datetime) ? new Date(datetime).toISOString() : ''
+
+      let seminarType = _seminarType
+      if (seminarType === 'Seminar 1') seminarType = 'Seminar Proposal'
+      if (seminarType === 'Seminar 2') seminarType = 'Seminar Hasil'
 
       const room = _datetime.split(/[(00|30|15|WITA)] /).pop() || ''
 
